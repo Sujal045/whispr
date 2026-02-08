@@ -1,0 +1,17 @@
+[
+    {
+      "title": "Great Experience",
+      "content": "The dashboard is very intuitive and easy to use.",
+      "received": "10 mins ago"
+    },
+    {
+      "title": "Feature Request",
+      "content": "It would be nice to have dark mode support.",
+      "received": "10 mins ago"
+    },
+    {
+      "title": "Minor Bug",
+      "content": "The message toggle sometimes takes a second to update.",
+      "received": "10 mins ago"
+    }
+]

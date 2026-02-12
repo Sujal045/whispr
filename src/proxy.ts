@@ -21,6 +21,17 @@ export async function proxy(request: NextRequest) {
         return NextResponse.redirect(new URL('/sign-in', request.url))
     }
 
+    if (url.pathname.startsWith('/admin')) {
+        if (!token) {
+            return NextResponse.redirect(new URL('/sign-in', request.url))
+        }
+        console.log(token)
+
+        if (token.role !== "admin") {
+            return NextResponse.redirect(new URL('/', request.url))
+        }
+    }
+
     return NextResponse.next()
 }
 
@@ -30,7 +41,8 @@ export const config = {
         '/sign-in',
         '/sign-up',
         '/dashboard/:path*',
-        '/verify/:path*'
+        '/verify/:path*',
+        '/admin/:path*'
     ]
 }
 

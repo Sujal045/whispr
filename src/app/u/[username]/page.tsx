@@ -21,6 +21,9 @@ const messageSchema = z.object({
 })
 
 const SendMessagePage = () => {
+    const [suggestions, setSuggestions] = useState<string[]>([])
+    const [isGenerating, setIsGenerating] = useState(false)
+
     const params = useParams<{ username: string }>()
     const username = params.username
 
@@ -51,6 +54,22 @@ const SendMessagePage = () => {
             setIsLoading(false)
         }
     }
+
+    const handleGenerate = async () => {
+        setIsGenerating(true)
+        setSuggestions([])
+        try {
+          const response = await fetch('/api/suggest-messages', {
+            method: 'POST',
+          })
+          const data = await response.json()
+          setSuggestions(data.questions)
+        } catch (error) {
+          toast.error("Failed to generate suggestions")
+        } finally {
+          setIsGenerating(false)
+        }
+      }
 
     return (
         <div className="container mx-auto my-8 p-6 bg-white rounded max-w-4xl">
@@ -90,13 +109,31 @@ const SendMessagePage = () => {
                     </div>
                 </form>
             </Form>
-            
+
             <div className="text-center mt-8">
                 <div className="mb-4">Get Your Message Board</div>
                 <Link href={'/sign-up'}>
                     <Button>Create Your Account</Button>
                 </Link>
             </div>
+            <div className="text-center mt-8">
+                <Button onClick={handleGenerate} disabled={isGenerating}>
+                    {isGenerating ? "Generating..." : "Generate Messages"}
+                </Button>
+            </div>
+            {suggestions.length > 0 && (
+                <div className="mt-6 space-y-3">
+                    {suggestions.map((msg, index) => (
+                        <div
+                            key={index}
+                            className="p-4 border rounded-lg bg-gray-50 cursor-pointer hover:bg-gray-100"
+                            onClick={() => form.setValue("content", msg)}
+                        >
+                            {msg}
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     )
 }

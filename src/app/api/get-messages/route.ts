@@ -49,7 +49,7 @@ export async function GET (request: Request) {
         return Response.json(
             {
                 success: true,
-                messages: user[0].messages
+                messages: user[0].message
             },
             { status: 200 }
         )

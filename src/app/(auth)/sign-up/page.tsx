@@ -24,7 +24,7 @@ const page = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [debouncedUsername] = useDebounceValue(username, 300)
   const router = useRouter()
-  
+
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -36,7 +36,6 @@ const page = () => {
 
   useEffect(() => {
     const checkUsernameUnique = async () => {
-        console.log("triggered")
       if (debouncedUsername) {
         setIsCheckingUsername(true)
         setUsernameMessage('')
@@ -63,7 +62,7 @@ const page = () => {
         toast("This is title", {
           description: response.data.message
         })
-        router.replace(`/verify/${username}`)
+        router.replace(`/sign-in`)
         setIsSubmitting(false)
       }
     catch (error) {

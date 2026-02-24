@@ -18,31 +18,31 @@ export async function GET() {
           { status: 401 }
       )
   }
-  const foundUser = await UserModel.findById(user._id)
-  console.log("-------------------------------------------------------")
-  console.log(foundUser)
-  return Response.json(
-    {
-        success: true,
-        username: foundUser?.username,
-        email: foundUser?.email
-    },
-    { status: 200 }
-)
-
   try {
-    const users = await UserModel.find({})
-      .select("-password")
-      .lean()
-
-    return NextResponse.json({
-      success: true,
-      users,
-    })
-
+    const foundUser = await UserModel.findById(user._id)
+    if (!foundUser) {
+      return Response.json(
+        {
+          success: false,
+          message: "User not found"
+        },
+        { status: 404 }
+      )
+    }
+    return Response.json(
+      {
+          success: true,
+          username: foundUser?.username,
+          email: foundUser?.email
+      },
+      { status: 200 }
+    )
   } catch (error) {
-    return NextResponse.json(
-      { success: false, message: "Error fetching users" },
+    return Response.json(
+      {
+        success: false,
+        message: "Failed to fetch user data"
+      },
       { status: 500 }
     )
   }

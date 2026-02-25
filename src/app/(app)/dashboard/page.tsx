@@ -7,7 +7,6 @@ import { ApiResponse } from "@/src/types/ApiResponse"
 import { zodResolver } from "@hookform/resolvers/zod"
 import axios, { AxiosError } from "axios"
 import { useSession } from "next-auth/react"
-import { accumulateViewport } from "next/dist/lib/metadata/resolve-metadata"
 import { useCallback, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -23,7 +22,7 @@ const Dashboard = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [isSwitchLoading, setIsSwitchLoading] = useState(false)
 
-    const { data: session } = useSession()
+    const { data: session, status } = useSession()
 
     const form = useForm({
         resolver: zodResolver(acceptMessagesSchema)
@@ -93,6 +92,14 @@ const Dashboard = () => {
         }
     }
 
+    if (status === 'loading') {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+            </div>
+        )
+    }
+
     if (!session || !session.user) {
         return <div>Please login</div>
     }
@@ -159,7 +166,7 @@ const Dashboard = () => {
                 {messages.length > 0 ? (
                     messages.map((message) => (
                         <MessageCard
-                            key={message._id} // Fixed: added key
+                            key={message._id}
                             message={message}
                             onMessageDelete={handleDeleteMessage}
                         />

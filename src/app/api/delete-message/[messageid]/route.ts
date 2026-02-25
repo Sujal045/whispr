@@ -49,7 +49,4 @@ export async function DELETE (request: Request, {params}: {params: {messageId: s
             { status: 500 }
         )
     }
-
-
-    const userId = new mongoose.Types.ObjectId(user._id)
 }

@@ -5,8 +5,8 @@ import UserModel from "@/src/model/User";
 import mongoose from "mongoose";
 
 
-export async function DELETE (request: Request, {params}: {params: {messageId: string}}) {
-    const messageId = params.messageId
+export async function DELETE (request: Request, { params }: { params: Promise<{ messageid: string }> }) {
+    const { messageid: messageId } = await params
     await dbConnect()
 
     const session = await getServerSession()

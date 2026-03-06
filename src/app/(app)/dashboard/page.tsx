@@ -119,19 +119,19 @@ const Dashboard = () => {
   }
 
     return (
-        <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
-            <h1 className="text-4xl font-bold mb-4">User Dashboard</h1>
+        <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded-xl border border-gray-200 shadow-sm w-full max-w-6xl">
+            <h1 className="text-3xl font-bold mb-6 text-black">User Dashboard</h1>
 
             <div className="mb-4">
-                <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>{' '}
-                <div className="flex items-center">
+                <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Your Unique Link</h2>
+                <div className="flex items-center gap-2">
                     <input
                         type="text"
                         value={profileUrl}
                         disabled
-                        className="input input-bordered w-full p-2 mr-2"
+                        className="input input-bordered w-full p-2 mr-2 border border-gray-200 rounded-lg text-sm bg-gray-50 text-gray-700"
                     />
-                    <Button onClick={copyToClipboard}>Copy</Button>
+                    <Button onClick={copyToClipboard} className="cursor-pointer bg-black text-white hover:bg-gray-800">Copy</Button>
                 </div>
             </div>
 

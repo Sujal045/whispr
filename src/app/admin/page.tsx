@@ -29,7 +29,7 @@ export default async function AdminPage() {
           >
             <p><strong>Username:</strong> {user.username}</p>
             <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>Role:</strong> {user.role}</p>
+            {/* <p><strong>Role:</strong> {user.role}</p> */}
           </div>
         ))}
       </div>

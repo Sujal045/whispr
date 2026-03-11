@@ -115,7 +115,9 @@ const Dashboard = () => {
     }
 
   function handleDeleteMessage(messageId: string): void {
-    throw new Error("Function not implemented.")
+    setMessages((prevMessages) =>
+      prevMessages.filter((message) => message._id !== messageId)
+    )
   }
 
     return (

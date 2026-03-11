@@ -43,6 +43,12 @@ export async function POST(request: NextRequest) {
                 { status: 404 }
             )
         }
+        if (!user.password) {
+            return NextResponse.json(
+                { success: false, message: "You signed in with Google and do not have a password." },
+                { status: 400 }
+            )
+        }
 
         const isCurrentPasswordCorrect = await bcrypt.compare(currentPassword, user.password)
 

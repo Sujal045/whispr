@@ -35,6 +35,9 @@ export const authOptions: NextAuthOptions = {
                     if (!user.isVerified) {
                         throw new Error("Please verify your account first")
                     }
+                    if (!user.password) {
+                        throw new Error("Please log in with Google")
+                    }
                     const isPasswordCorrect = await bcrypt.compare(credentials.password, user.password)
                     if (isPasswordCorrect) {
                         return user
@@ -48,7 +51,43 @@ export const authOptions: NextAuthOptions = {
         })
     ],
     callbacks: {
-        async jwt({ token, user }) {
+        async signIn({ user, account, profile }) {
+            if (account?.provider === 'google') {
+                await dbConnect();
+                try {
+                    const existingUser = await UserModel.findOne({ email: user.email });
+                    if (!existingUser) {
+                        const newUser = new UserModel({
+                            email: user.email,
+                            username: user.email?.split('@')[0] || `user${Date.now()}`,
+                            isVerified: true,
+                            isAcceptingMessage: true,
+                            role: 'user',
+                            message: []
+                        });
+                        await newUser.save();
+                        user._id = newUser._id?.toString();
+                        user.username = newUser.username;
+                        user.isVerified = newUser.isVerified;
+                        user.isAcceptingMessage = true;
+                        user.role = 'user';
+                        return true;
+                    } else {
+                        user._id = existingUser._id?.toString();
+                        user.username = existingUser.username;
+                        user.isVerified = existingUser.isVerified;
+                        user.isAcceptingMessage = existingUser.isAcceptingMessage;
+                        user.role = existingUser.role;
+                        return true;
+                    }
+                } catch (error) {
+                    console.error("Error creating Google user:", error);
+                    return false;
+                }
+            }
+            return true;
+        },
+        async jwt({ token, user, account }) {
             if (user) {
                 token._id = user._id?.toString()
                 token.isVerified = user.isVerified
@@ -56,16 +95,17 @@ export const authOptions: NextAuthOptions = {
                 token.username = user.username
                 token.role = user.role
             }
+            // If the token lacks NextAuth specific custom fields during consecutive requests, we'd ideally load them from the user object here, but since the sign-in callback directly adds to the `user` object above, it flows into `jwt` correctly.
 
             return token
         },
         async session({ session, token }) {
             if (token) {
-                session.user._id = token._id
-                session.user.isVerified = token.isVerified;
-                session.user.isAcceptingMessage = token.isAcceptingMessage;
-                session.user.username = token.username;
-                session.user.role = token.role
+                session.user._id = token._id as string
+                session.user.isVerified = token.isVerified as boolean;
+                session.user.isAcceptingMessage = token.isAcceptingMessage as boolean;
+                session.user.username = token.username as string;
+                session.user.role = token.role as 'user' | 'admin'
             }
             return session
         }

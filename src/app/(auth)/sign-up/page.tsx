@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation"
 import { signUpSchema } from "@/src/schemas/signUpSchema"
 import axios, {AxiosError} from 'axios'
 import { ApiResponse } from "@/src/types/ApiResponse"
+import { signIn } from "next-auth/react"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -151,6 +152,24 @@ const page = () => {
               disabled={isSubmitting}
             >
               {isSubmitting ? "Signing up..." : "Sign Up"}
+            </Button>
+
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500 rounded-full">Or continue with</span>
+              </div>
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
+            >
+              Sign up with Google
             </Button>
           </form>
         </Form>

@@ -5,8 +5,15 @@ import Carousel from '@/src/components/ui/Carousel'
 import messages from '@/src/messages.json'
 import { Mail, MessageSquare, Shield, Sparkles } from 'lucide-react'
 import Link from 'next/link'
+import { useSession } from 'next-auth/react'
+import { User } from 'next-auth'
 
 const Home = () => {
+  const { data: session, status } = useSession()
+  const user = session?.user as User | undefined
+  const isAuthenticated = status === 'authenticated' && !!user
+  const isLoadingSession = status === 'loading'
+
   return (
     <div className="min-h-screen bg-white text-black">
 
@@ -15,32 +22,70 @@ const Home = () => {
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gray-300 text-gray-500 text-sm mb-8">
             <Sparkles className="w-4 h-4" />
-            Anonymous Messaging Platform
+            {isAuthenticated ? 'Your anonymous inbox is live' : 'Anonymous Messaging Platform'}
           </div>
 
           <h1 className="text-5xl md:text-7xl font-extrabold text-black mb-6 leading-tight tracking-tight">
-            Send &amp; Receive<br />
-            <span className="text-gray-400">Whyspr</span>
+            {isAuthenticated ? (
+              <>
+                Welcome back,<br />
+                <span className="text-gray-400">{user.username || 'Whyspr user'}</span>
+              </>
+            ) : (
+              <>
+                Send &amp; Receive<br />
+                <span className="text-gray-400">Whyspr</span>
+              </>
+            )}
           </h1>
 
           <p className="text-lg text-gray-500 max-w-xl mx-auto mb-10">
-            Share your thoughts anonymously. Connect with others without revealing your identity.
-            Experience the thrill of mystery messaging.
+            {isAuthenticated
+              ? 'Check your latest messages, update your profile, or share your public link to receive more anonymous notes.'
+              : 'Share your thoughts anonymously. Connect with others without revealing your identity. Experience the thrill of mystery messaging.'}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/sign-up"
-              className="cursor-pointer px-8 py-3 bg-black text-white font-semibold rounded-full hover:bg-gray-800 transition-colors duration-200 shadow-sm"
-            >
-              Get Started Free
-            </Link>
-            <Link
-              href="/sign-in"
-              className="cursor-pointer px-8 py-3 border border-black text-black font-semibold rounded-full hover:bg-gray-100 transition-colors duration-200"
-            >
-              Sign In
-            </Link>
+            {isLoadingSession ? (
+              <>
+                <div className="px-8 py-3 bg-black text-white font-semibold rounded-full opacity-80">
+                  Loading your space...
+                </div>
+                <div className="px-8 py-3 border border-black text-black font-semibold rounded-full opacity-60">
+                  Just a moment
+                </div>
+              </>
+            ) : isAuthenticated ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  className="cursor-pointer px-8 py-3 bg-black text-white font-semibold rounded-full hover:bg-gray-800 transition-colors duration-200 shadow-sm"
+                >
+                  Open Dashboard
+                </Link>
+                <Link
+                  href="/profile"
+                  className="cursor-pointer px-8 py-3 border border-black text-black font-semibold rounded-full hover:bg-gray-100 transition-colors duration-200"
+                >
+                  View Profile
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/sign-up"
+                  className="cursor-pointer px-8 py-3 bg-black text-white font-semibold rounded-full hover:bg-gray-800 transition-colors duration-200 shadow-sm"
+                >
+                  Get Started Free
+                </Link>
+                <Link
+                  href="/sign-in"
+                  className="cursor-pointer px-8 py-3 border border-black text-black font-semibold rounded-full hover:bg-gray-100 transition-colors duration-200"
+                >
+                  Sign In
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -137,17 +182,32 @@ const Home = () => {
       <section className="py-20 px-4 bg-gray-50 border-t border-gray-100">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-black mb-4">
-            Ready to Get Started?
+            {isAuthenticated ? 'Keep the conversation going' : 'Ready to Get Started?'}
           </h2>
           <p className="text-gray-500 mb-8">
-            Join thousands of users already sending and receiving mystery messages.
+            {isAuthenticated
+              ? 'Your account is ready. Jump back in, manage your inbox, or share your personal message link.'
+              : 'Join thousands of users already sending and receiving mystery messages.'}
           </p>
-          <Link
-            href="/sign-up"
-            className="cursor-pointer inline-block px-10 py-3.5 bg-black text-white font-semibold rounded-full hover:bg-gray-800 transition-colors duration-200 shadow-sm"
-          >
-            Create Your Account
-          </Link>
+          {isLoadingSession ? (
+            <div className="inline-block px-10 py-3.5 bg-black text-white font-semibold rounded-full opacity-80">
+              Loading...
+            </div>
+          ) : isAuthenticated ? (
+            <Link
+              href={user?.username ? `/u/${user.username}` : '/dashboard'}
+              className="cursor-pointer inline-block px-10 py-3.5 bg-black text-white font-semibold rounded-full hover:bg-gray-800 transition-colors duration-200 shadow-sm"
+            >
+              View Your Public Page
+            </Link>
+          ) : (
+            <Link
+              href="/sign-up"
+              className="cursor-pointer inline-block px-10 py-3.5 bg-black text-white font-semibold rounded-full hover:bg-gray-800 transition-colors duration-200 shadow-sm"
+            >
+              Create Your Account
+            </Link>
+          )}
         </div>
       </section>
 

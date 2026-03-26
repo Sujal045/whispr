@@ -87,10 +87,10 @@ const Carousel = ({ children, autoplay = true, autoplayInterval = 3000 }: Carous
           <button
             key={index}
             onClick={() => scrollTo(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+            className={`w-3 h-3 rounded-full transition-all duration-300 cursor-pointer ${
               index === selectedIndex
-                ? 'bg-purple-600 w-8'
-                : 'bg-gray-300 hover:bg-gray-400'
+                ? 'bg-black w-8'
+                : 'bg-gray-300 hover:bg-gray-500'
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />

@@ -2,14 +2,13 @@ import { getServerSession, User } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 import dbConnect from "@/src/lib/dbConnect";
 import UserModel from "@/src/model/User";
-import mongoose from "mongoose";
 
 
-export async function DELETE (request: Request, {params}: {params: {messageId: string}}) {
-    const messageId = params.messageId
+export async function DELETE (request: Request, { params }: { params: Promise<{ messageid: string }> }) {
+    const { messageid: messageId } = await params
     await dbConnect()
 
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
     const user: User = session?.user as User
 
     if (!session || !session.user) {
@@ -22,7 +21,10 @@ export async function DELETE (request: Request, {params}: {params: {messageId: s
         )
     }
     try {
-        const updatedResult = await UserModel.updateOne({_id: user._id}, {$pull: {messages: {_id: messageId}}})
+        const updatedResult = await UserModel.updateOne(
+            { _id: user._id },
+            { $pull: { message: { _id: messageId } } }
+        )
         if (updatedResult.modifiedCount == 0) {
             return Response.json(
                 {
@@ -49,7 +51,4 @@ export async function DELETE (request: Request, {params}: {params: {messageId: s
             { status: 500 }
         )
     }
-
-
-    const userId = new mongoose.Types.ObjectId(user._id)
 }

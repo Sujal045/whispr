@@ -19,6 +19,13 @@ export async function POST (request: Request) {
             )
         }
 
+        if (!user.verifyCode || !user.verifyCodeExpiry) {
+            return Response.json(
+                { success: false, message: "No verification code exists for this user" },
+                { status: 400 }
+            )
+        }
+
         const isCodeValid = user.verifyCode === code
         const isCodeNotExpired = new Date(user.verifyCodeExpiry) > new Date()
 

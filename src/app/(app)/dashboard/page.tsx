@@ -7,7 +7,6 @@ import { ApiResponse } from "@/src/types/ApiResponse"
 import { zodResolver } from "@hookform/resolvers/zod"
 import axios, { AxiosError } from "axios"
 import { useSession } from "next-auth/react"
-import { accumulateViewport } from "next/dist/lib/metadata/resolve-metadata"
 import { useCallback, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -23,7 +22,7 @@ const Dashboard = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [isSwitchLoading, setIsSwitchLoading] = useState(false)
 
-    const { data: session } = useSession()
+    const { data: session, status } = useSession()
 
     const form = useForm({
         resolver: zodResolver(acceptMessagesSchema)
@@ -93,6 +92,14 @@ const Dashboard = () => {
         }
     }
 
+    if (status === 'loading') {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+            </div>
+        )
+    }
+
     if (!session || !session.user) {
         return <div>Please login</div>
     }
@@ -108,23 +115,25 @@ const Dashboard = () => {
     }
 
   function handleDeleteMessage(messageId: string): void {
-    throw new Error("Function not implemented.")
+    setMessages((prevMessages) =>
+      prevMessages.filter((message) => message._id !== messageId)
+    )
   }
 
     return (
-        <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
-            <h1 className="text-4xl font-bold mb-4">User Dashboard</h1>
+        <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded-xl border border-gray-200 shadow-sm w-full max-w-6xl">
+            <h1 className="text-3xl font-bold mb-6 text-black">User Dashboard</h1>
 
             <div className="mb-4">
-                <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>{' '}
-                <div className="flex items-center">
+                <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Your Unique Link</h2>
+                <div className="flex items-center gap-2">
                     <input
                         type="text"
                         value={profileUrl}
                         disabled
-                        className="input input-bordered w-full p-2 mr-2"
+                        className="input input-bordered w-full p-2 mr-2 border border-gray-200 rounded-lg text-sm bg-gray-50 text-gray-700"
                     />
-                    <Button onClick={copyToClipboard}>Copy</Button>
+                    <Button onClick={copyToClipboard} className="cursor-pointer bg-black text-white hover:bg-gray-800">Copy</Button>
                 </div>
             </div>
 
@@ -159,7 +168,7 @@ const Dashboard = () => {
                 {messages.length > 0 ? (
                     messages.map((message) => (
                         <MessageCard
-                            key={message._id} // Fixed: added key
+                            key={message._id}
                             message={message}
                             onMessageDelete={handleDeleteMessage}
                         />

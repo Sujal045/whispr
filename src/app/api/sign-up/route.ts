@@ -31,7 +31,6 @@ export async function POST(request: Request) {
                     message: "User already exists with this email"
                 }, {status: 400})
             } else {
-                const hashedPassword = await bcrypt.hash(password, 10)
                 existingUserByEmail.verifyCode = verifyCode;
                 existingUserByEmail.verifyCodeExpiry = new Date(Date.now() + 3600000)
                 await existingUserByEmail.save()
@@ -47,7 +46,7 @@ export async function POST(request: Request) {
                 password: hashedPassword,
                 verifyCode,
                 verifyCodeExpiry: expiryDate,
-                isVerified: false,
+                isVerified: true,
                 isAcceptingMessage: true,
                 message: []
             })
@@ -56,18 +55,18 @@ export async function POST(request: Request) {
         }
 
             //send verification email
-        const emailResponse = await sendVerificationEmail(
-            email,
-            username,
-            verifyCode
-        )
+        // const emailResponse = await sendVerificationEmail(
+        //     email,
+        //     username,
+        //     verifyCode
+        // )
 
-        if (!emailResponse.success) {
-            return Response.json({
-                success: false,
-                message: emailResponse.message
-            }, {status: 500})
-        }
+        // if (!emailResponse.success) {
+        //     return Response.json({
+        //         success: false,
+        //         message: emailResponse.message
+        //     }, {status: 500})
+        // }
 
         return Response.json({
             success: true,

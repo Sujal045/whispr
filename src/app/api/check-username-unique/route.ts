@@ -16,7 +16,6 @@ export async function GET (request: Request) {
             username: searchParams.get('username')
         }
         const result = usernameQuerySchema.safeParse(queryParam)
-        console.log(result) //TODO: remove
 
         if (!result.success) {
             const errors = z.treeifyError(result.error);

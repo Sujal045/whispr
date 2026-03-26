@@ -44,7 +44,7 @@ const page = () => {
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-8 bg-rounded-lg shadow-md">
         <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
-          Join Mystery Message
+          Join Whyspr
         </h1>
         <p className="mb-4">Sign in to start your anonymous adventure</p>
         <Form {...form}>
@@ -87,6 +87,24 @@ const page = () => {
               disabled={isSubmitting}
             >
               {isSubmitting ? "Signing in..." : "Sign In"}
+            </Button>
+            
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500 rounded-full">Or continue with</span>
+              </div>
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
+            >
+              Sign in with Google
             </Button>
           </form>
         </Form>

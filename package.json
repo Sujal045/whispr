@@ -20,6 +20,8 @@
     "@radix-ui/react-slot": "^1.2.4",
     "@radix-ui/react-switch": "^1.2.6",
     "@react-email/components": "^1.0.1",
+    "@upstash/ratelimit": "^2.0.8",
+    "@upstash/redis": "^1.38.0",
     "ai": "^6.0.18",
     "axios": "^1.13.2",
     "bcryptjs": "^3.0.3",

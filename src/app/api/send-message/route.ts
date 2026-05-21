@@ -3,12 +3,26 @@ import UserModel from "@/src/model/User";
 import { Message } from "@/src/model/User";
 import { messageSchema } from "@/src/schemas/messageSchema";
 import { usernameValidation } from "@/src/schemas/signUpSchema";
+import { messageRateLimiter } from "@/src/lib/rate-limit";
 
 const sendMessageSchema = messageSchema.extend({
     username: usernameValidation,
 });
 
 export async function POST (request: Request) {
+    const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
+    const { success } = await messageRateLimiter.limit(ip);
+
+    if (!success) {
+        return Response.json(
+            {
+                success: false,
+                message: "Rate limit exceeded. Please try again later."
+            },
+            { status: 429 }
+        )
+    }
+
     let requestBody: unknown
     try {
         requestBody = await request.json()

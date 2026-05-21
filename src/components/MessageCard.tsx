@@ -35,7 +35,7 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProp) => {
     try {
       const response = await axios.delete<ApiResponse>(`/api/delete-message/${message._id}`)
       toast(response.data.message)
-      onMessageDelete(message._id)
+      onMessageDelete(message._id as unknown as string)
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>
       toast.error("Error", {

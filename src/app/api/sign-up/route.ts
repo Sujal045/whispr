@@ -1,13 +1,32 @@
 import dbConnect from "@/src/lib/dbConnect";
 import UserModel from "@/src/model/User";
 import bcrypt from "bcryptjs";
-import { sendVerificationEmail } from "@/src/helpers/sendVerificationEmail";
+import { signUpSchema } from "@/src/schemas/signUpSchema";
 
 
 export async function POST(request: Request) {
+    let requestBody: unknown
+    try {
+        requestBody = await request.json()
+    } catch {
+        return Response.json({
+            success: false,
+            message: "Invalid request body"
+        }, {status: 400})
+    }
+
+    const validationResult = signUpSchema.safeParse(requestBody)
+
+    if (!validationResult.success) {
+        return Response.json({
+            success: false,
+            message: validationResult.error.issues[0]?.message ?? "Invalid request data"
+        }, {status: 400})
+    }
+
     await dbConnect()
     try {
-        const {username, email, password} = await request.json()
+        const {username, email, password} = validationResult.data
         const existingUserVerifiedByUsername = await UserModel.findOne({
             username,
             isVerified: true

@@ -116,7 +116,7 @@ const Dashboard = () => {
 
   function handleDeleteMessage(messageId: string): void {
     setMessages((prevMessages) =>
-      prevMessages.filter((message) => message._id !== messageId)
+      prevMessages.filter((message) => (message._id as unknown as string) !== messageId)
     )
   }
 
@@ -168,7 +168,7 @@ const Dashboard = () => {
                 {messages.length > 0 ? (
                     messages.map((message) => (
                         <MessageCard
-                            key={message._id}
+                            key={message._id as unknown as string}
                             message={message}
                             onMessageDelete={handleDeleteMessage}
                         />

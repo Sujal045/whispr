@@ -1,11 +1,42 @@
 import dbConnect from "@/src/lib/dbConnect";
 import UserModel from "@/src/model/User";
 import { Message } from "@/src/model/User";
+import { messageSchema } from "@/src/schemas/messageSchema";
+import { usernameValidation } from "@/src/schemas/signUpSchema";
+
+const sendMessageSchema = messageSchema.extend({
+    username: usernameValidation,
+});
 
 export async function POST (request: Request) {
+    let requestBody: unknown
+    try {
+        requestBody = await request.json()
+    } catch {
+        return Response.json(
+            {
+                success: false,
+                message: "Invalid request body"
+            },
+            { status: 400 }
+        )
+    }
+
+    const validationResult = sendMessageSchema.safeParse(requestBody)
+
+    if (!validationResult.success) {
+        return Response.json(
+            {
+                success: false,
+                message: validationResult.error.issues[0]?.message ?? "Invalid request data"
+            },
+            { status: 400 }
+        )
+    }
+
     await dbConnect()
 
-    const { username, content } = await request.json()
+    const { username, content } = validationResult.data
 
     try {
         const user = await UserModel.findOne({username})
@@ -42,7 +73,7 @@ export async function POST (request: Request) {
             },
             { status: 200 }
         )
-    } catch (error) {
+    } catch {
         return Response.json(
             {
                 success: false,

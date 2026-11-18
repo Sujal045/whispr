@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Whyspr — Anonymous Messaging",
-  description: "Send and receive anonymous messages on Whyspr.",
+  title: "Whispr — Anonymous Messaging",
+  description: "Send and receive anonymous messages on Whispr.",
 };
 
 export default function RootLayout({

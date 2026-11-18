@@ -1,6 +1,6 @@
-# Whyspr
+# Whispr
 
-Whyspr is an anonymous message sending app built with Next.js, TypeScript, MongoDB, and NextAuth. Users can create an account, share a public profile link, receive anonymous messages, and control whether they are accepting new messages.
+Whispr is an anonymous message sending app built with Next.js, TypeScript, MongoDB, and NextAuth. Users can create an account, share a public profile link, receive anonymous messages, and control whether they are accepting new messages.
 
 ## What It Does
 

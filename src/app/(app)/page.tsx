@@ -29,12 +29,12 @@ const Home = () => {
             {isAuthenticated ? (
               <>
                 Welcome back,<br />
-                <span className="text-gray-400">{user.username || 'Whyspr user'}</span>
+                <span className="text-gray-400">{user.username || 'Whispr user'}</span>
               </>
             ) : (
               <>
                 Send &amp; Receive<br />
-                <span className="text-gray-400">Whyspr</span>
+                <span className="text-gray-400">Whispr</span>
               </>
             )}
           </h1>
@@ -132,7 +132,7 @@ const Home = () => {
       <section className="py-20 px-4">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-black text-center mb-14">
-            Why Choose Whyspr?
+            Why Choose Whispr?
           </h2>
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -214,7 +214,7 @@ const Home = () => {
       {/* Footer */}
       <footer className="py-8 px-4 border-t border-gray-200">
         <div className="max-w-6xl mx-auto text-center text-gray-400 text-sm">
-          <p>© 2026 Whyspr. All rights reserved.</p>
+          <p>© 2026 Whispr. All rights reserved.</p>
         </div>
       </footer>
     </div>

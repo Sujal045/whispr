@@ -19,7 +19,7 @@ const Navbar = () => {
           href='/'
           className='text-lg font-bold text-black tracking-tight hover:opacity-70 transition-opacity'
         >
-          Whyspr
+          Whispr
         </Link>
 
         {/* Right side */}

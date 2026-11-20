@@ -19,7 +19,23 @@ export async function POST (request: Request) {
     }
 
     const userId = user._id
-    const {acceptMessage} = await request.json()
+
+    let acceptMessage: unknown
+    try {
+        ({ acceptMessage } = await request.json())
+    } catch {
+        return Response.json(
+            { success: false, message: "Invalid request body" },
+            { status: 400 }
+        )
+    }
+
+    if (typeof acceptMessage !== "boolean") {
+        return Response.json(
+            { success: false, message: "acceptMessage must be a boolean" },
+            { status: 400 }
+        )
+    }
 
     try {
         const updatedUser = await UserModel.findByIdAndUpdate(userId, { isAcceptingMessage: acceptMessage}, {new: true})
@@ -36,7 +52,7 @@ export async function POST (request: Request) {
             {
                 success: true,
                 message: "Message acceptance status updated successfully",
-                updatedUser
+                isAcceptingMessage: updatedUser.isAcceptingMessage
             },
             { status: 200 }
         )

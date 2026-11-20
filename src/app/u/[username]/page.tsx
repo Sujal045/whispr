@@ -63,6 +63,10 @@ const SendMessagePage = () => {
             method: 'POST',
           })
           const data = await response.json()
+          if (!response.ok || !Array.isArray(data.questions)) {
+            toast.error(data.error || "Failed to generate suggestions")
+            return
+          }
           setSuggestions(data.questions)
         } catch (error) {
           toast.error("Failed to generate suggestions")

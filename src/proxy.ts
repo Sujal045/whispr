@@ -17,7 +17,7 @@ export async function proxy(request: NextRequest) {
     }
 
     // If user is NOT authenticated and trying to access protected routes, redirect to sign-in
-    if (!token && url.pathname.startsWith('/dashboard')) {
+    if (!token && (url.pathname.startsWith('/dashboard') || url.pathname.startsWith('/profile'))) {
         return NextResponse.redirect(new URL('/sign-in', request.url))
     }
 
@@ -25,8 +25,6 @@ export async function proxy(request: NextRequest) {
         if (!token) {
             return NextResponse.redirect(new URL('/sign-in', request.url))
         }
-        console.log(token)
-
         if (token.role !== "admin") {
             return NextResponse.redirect(new URL('/', request.url))
         }
@@ -41,6 +39,7 @@ export const config = {
         '/sign-in',
         '/sign-up',
         '/dashboard/:path*',
+        '/profile/:path*',
         '/verify/:path*',
         '/admin/:path*'
     ]

@@ -41,7 +41,9 @@ const page = () => {
         setIsCheckingUsername(true)
         setUsernameMessage('')
           try {
-            const response = await axios.get(`/api/check-username-unique?username=${debouncedUsername}`)
+            const response = await axios.get('/api/check-username-unique', {
+              params: { username: debouncedUsername }
+            })
             setUsernameMessage(response.data.message)
           } catch (error) {
             const axiosError = error as AxiosError<ApiResponse>;
@@ -60,7 +62,7 @@ const page = () => {
     setIsSubmitting(true)
     try {
         const response = await axios.post<ApiResponse>('/api/sign-up', data)
-        toast("This is title", {
+        toast.success("Sign up successful", {
           description: response.data.message
         })
         router.replace(`/sign-in`)

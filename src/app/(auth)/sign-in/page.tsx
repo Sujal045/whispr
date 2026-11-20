@@ -25,26 +25,34 @@ const page = () => {
   })
 
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
-    const result = await signIn('credentials', {
-      redirect: false,
-      identifier: data.identifier,
-      password: data.password
-    })
-    if (result?.error) {
-      toast.error("Login failed", {
-        description: "Incorrect username or password"
+    setIsSubmitting(true)
+    try {
+      const result = await signIn('credentials', {
+        redirect: false,
+        identifier: data.identifier,
+        password: data.password
       })
-    }
-    if (result?.url) {
-      console.log("yes")
-      router.replace('/dashboard')
+      if (result?.error) {
+        toast.error("Login failed", {
+          description: "Incorrect username or password"
+        })
+      } else if (result?.url) {
+        router.replace('/dashboard')
+      }
+    } catch (error) {
+      console.error("Error while signing in", error)
+      toast.error("Login failed", {
+        description: "Something went wrong. Please try again."
+      })
+    } finally {
+      setIsSubmitting(false)
     }
   }
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-8 bg-rounded-lg shadow-md">
         <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
-          Join Whispr
+          Welcome back to Whispr
         </h1>
         <p className="mb-4">Sign in to start your anonymous adventure</p>
         <Form {...form}>
